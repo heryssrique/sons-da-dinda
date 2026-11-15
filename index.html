@@ -22,8 +22,9 @@
     text-shadow: 3px 3px 0 #5e3416; box-shadow: 0 6px 0 #5e3416; text-align: center;
   }
   .placa span { color: var(--pink); text-shadow: 3px 3px 0 #fff, 5px 5px 0 #5e3416; }
-  .placa.novos { color: var(--yellow); }
+  .placa.novos { color: var(--yellow); margin-top: 28px; }
   .grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .vazio { grid-column: 1 / -1; text-align: center; opacity: .6; margin: 0; }
   .som {
     position: relative; padding: 8px 6px; border: 2px solid var(--wood-dark); border-radius: 8px;
     background: linear-gradient(#f8d9a6, var(--wood)); box-shadow: 0 3px 0 var(--wood-dark);
@@ -37,10 +38,11 @@
     border: 0; background: #d33; color: #fff; font-weight: 700; cursor: pointer; line-height: 22px; padding: 0;
   }
   form { display: flex; gap: 8px; justify-content: center; margin: 20px 0 8px; flex-wrap: wrap; }
-  input {
-    flex: 1 1 220px; max-width: 320px; padding: 10px 12px; font: 600 17px Fredoka, sans-serif;
-    border: 2px solid var(--wood-dark); border-radius: 8px; background: #fffaf0;
+  input, select {
+    padding: 10px 12px; font: 600 17px Fredoka, sans-serif;
+    border: 2px solid var(--wood-dark); border-radius: 8px; background: #fffaf0; color: var(--ink);
   }
+  input { flex: 1 1 220px; max-width: 320px; }
   button.add {
     padding: 10px 18px; font: 400 20px 'Luckiest Guy', cursive; color: #fff; cursor: pointer;
     background: var(--pink); border: 2px solid #c2337a; border-radius: 8px; box-shadow: 0 3px 0 #c2337a;
@@ -53,13 +55,17 @@
 <body>
 <div class="wrap">
   <h1 class="placa">Sons da live da <span>Dinda</span></h1>
-  <div class="grade" id="sons"></div>
+  <div class="grade" id="sons"><p class="vazio">Carregando…</p></div>
 
   <h2 class="placa novos">Novos sons</h2>
   <div class="grade novo" id="novos"></div>
 
   <form id="form" hidden>
-    <input id="cmd" placeholder="novo comando, ex: !bomdia" autocomplete="off" required maxlength="30" aria-label="Novo comando">
+    <input id="cmd" placeholder="novo comando, ex: !bomdia" autocomplete="off" required maxlength="31" aria-label="Novo comando">
+    <select id="secao" aria-label="Seção">
+      <option value="novos">em Novos sons</option>
+      <option value="sons">em Sons</option>
+    </select>
     <button class="add">Adicionar</button>
   </form>
   <p id="aviso" role="status"></p>
@@ -67,20 +73,15 @@
 </div>
 
 <script>
-const SONS = `10mil abafa calar elevoltou big eunaoaceito exacly meautosabotei morreu naovainao seliga surto
-uiquedelicia verdade voupracasa euadoro elanaovemmais sugardaddy apagaisso partiuaglomerar trindom pagode
-peixe calma orianna taric vayne pediu socorro naodoeu mentira bixa tira doendo desumano pau explodir queodio
-voucagar barraco pintam milreais pix naotenho dois queen fimdomundo mulher perae fazendomerda eladisseisso
-grito ai gogogo ahh gemidao morra rezando eoutra ahri coco para vemca starmie peidao euquero mami meperdoa
-sumir oxente vergonha balao fogo scat chanel tratando limpatudo alivia gata mendiga violento possofalar
-loira autoestima`.split(/\s+/);
-const NOVOS = 'ajoelhar vagabunda eai carreira orar ganhou sotemgay parabens buceta aplausos gemido meusqueridos fodase'.split(' ');
-let extras = [];
+// Todos os sons ficam no servidor (api/sons.js): todo mundo vê a mesma lista e só quem tem a senha edita.
+let lista = { sons: [], novos: [] };
+let carregou = false;
 const aviso = t => { document.getElementById('aviso').textContent = t; };
 
-// Só quem tem a senha edita; ela fica neste navegador para não pedir toda vez.
+// A senha fica neste navegador para não pedir toda vez.
 let senha = '';
 try { senha = localStorage.getItem('sons-senha') || ''; } catch {}
+
 function modoEdicao(s) {
   senha = s;
   try { s ? localStorage.setItem('sons-senha', s) : localStorage.removeItem('sons-senha'); } catch {}
@@ -88,26 +89,29 @@ function modoEdicao(s) {
   document.getElementById('entrar').textContent = s ? 'Sair da edição' : 'Entrar para editar';
   render();
 }
+
 document.getElementById('entrar').onclick = async () => {
   if (senha) return modoEdicao('');
   const s = prompt('Senha para editar:');
   if (!s) return;
   const r = await fetch('/api/sons?verificar=1', { method: 'POST', headers: { 'x-senha': s } }).catch(() => null);
-  if (r && r.ok) { modoEdicao(s); aviso('Modo edição ligado'); } else aviso(r && r.status === 401 ? 'Senha errada' : 'Não deu para verificar, tente de novo');
+  if (r && r.ok) { modoEdicao(s); aviso('Modo edição ligado: dá para adicionar e remover qualquer som'); }
+  else aviso(r && r.status === 401 ? 'Senha errada' : 'Não deu para verificar, tente de novo');
 };
 
-// Sons novos ficam no servidor (api/sons.js), então todo mundo vê a mesma lista.
 async function carregar() {
   try {
     const r = await fetch('/api/sons', { cache: 'no-store' });
     if (!r.ok) throw 0;
-    extras = await r.json();
+    lista = await r.json();
+    carregou = true;
     render();
-  } catch { aviso('Não deu para carregar os sons novos'); }
+  } catch { aviso('Não deu para carregar os sons, recarregue a página'); }
 }
 
-async function api(metodo, nome) {
-  const r = await fetch('/api/sons?nome=' + encodeURIComponent(nome), { method: metodo, headers: { 'x-senha': senha } }).catch(() => null);
+async function api(metodo, secao, nome) {
+  const q = new URLSearchParams({ secao, nome });
+  const r = await fetch('/api/sons?' + q, { method: metodo, headers: { 'x-senha': senha } }).catch(() => null);
   if (r && r.status === 401) { modoEdicao(''); aviso('Senha mudou ou está errada, entre de novo'); return false; }
   if (!r || !r.ok) {
     const { erro } = r ? await r.json().catch(() => ({})) : {};
@@ -118,34 +122,39 @@ async function api(metodo, nome) {
   return true;
 }
 
-function botao(nome, apagavel) {
+function botao(secao, nome) {
   const b = document.createElement('button');
   b.className = 'som';
   b.textContent = '!' + nome;
   b.title = 'Clique para copiar';
   b.onclick = () => navigator.clipboard.writeText('!' + nome).then(() => aviso(`!${nome} copiado`), () => aviso('Não deu para copiar'));
-  if (apagavel) {
+  if (senha) {
     const x = document.createElement('span');
     x.className = 'apagar'; x.textContent = '×'; x.title = 'Remover'; x.setAttribute('role', 'button');
-    x.onclick = e => { e.stopPropagation(); if (confirm(`Remover !${nome} para todo mundo?`)) api('DELETE', nome).then(ok => ok && aviso(`!${nome} removido`)); };
+    x.onclick = e => { e.stopPropagation(); if (confirm(`Remover !${nome} para todo mundo?`)) api('DELETE', secao, nome).then(ok => ok && aviso(`!${nome} removido`)); };
     b.append(x);
   }
   return b;
 }
 
 function render() {
-  document.getElementById('sons').replaceChildren(...SONS.map(n => botao(n)));
-  document.getElementById('novos').replaceChildren(...NOVOS.map(n => botao(n)), ...extras.map(n => botao(n, !!senha)));
+  if (!carregou) return;
+  for (const secao of ['sons', 'novos']) {
+    const itens = lista[secao].map(n => botao(secao, n));
+    if (!itens.length) itens.push(Object.assign(document.createElement('p'), { className: 'vazio', textContent: 'Nenhum som aqui ainda' }));
+    document.getElementById(secao).replaceChildren(...itens);
+  }
 }
 
 document.getElementById('form').onsubmit = e => {
   e.preventDefault();
   const input = document.getElementById('cmd');
+  const secao = document.getElementById('secao').value;
   const nome = input.value.trim().toLowerCase().replace(/^!+/, '').replace(/\s+/g, '');
   if (!nome) return;
   if (!/^[a-z0-9]{1,30}$/.test(nome)) return aviso('Use só letras e números, sem acento');
-  if ([...SONS, ...NOVOS, ...extras].includes(nome)) return aviso(`!${nome} já existe`);
-  api('POST', nome).then(ok => { if (ok) { input.value = ''; aviso(`!${nome} adicionado`); } });
+  if ([...lista.sons, ...lista.novos].includes(nome)) return aviso(`!${nome} já existe`);
+  api('POST', secao, nome).then(ok => { if (ok) { input.value = ''; aviso(`!${nome} adicionado`); } });
 };
 
 modoEdicao(senha);
