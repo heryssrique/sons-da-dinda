@@ -4,61 +4,112 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sons da Live da Dinda</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka:wght@600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Luckiest+Guy&display=swap">
 <style>
-  :root { --wood: #f3c98b; --wood-dark: #c98b45; --ink: #3b2412; --yellow: #ffe14d; --pink: #ff5fa2; }
+  /* Visual do overlay da live: areia, mar no canto, molduras laranja, balões creme e etiquetas azuis. */
+  :root {
+    --areia: #f6dc93; --laranja: #f7a51c; --laranja-esc: #d9820a; --creme: #fdf7e6;
+    --azul: #49b3dc; --azul-esc: #2e8fb8; --tinta: #8a5a12; --marrom: #6b4208;
+  }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; } /* senão o display:flex do form vence o atributo hidden */
   body {
-    margin: 0; min-height: 100vh; padding: 16px; font-family: Fredoka, sans-serif; color: var(--ink);
-    background:
-      linear-gradient(100deg, transparent 88%, #7fd3e8 92%, #2bb5d6 100%),
-      radial-gradient(circle at 20% 30%, #fbe7c0, #f1d39a 70%);
+    margin: 0; min-height: 100vh; padding: 24px 16px 40px; font-family: 'Bree Serif', Georgia, serif; color: var(--tinta);
+    background-color: var(--areia);
+    /* grãos de areia */
+    background-image:
+      radial-gradient(rgba(160, 110, 30, .22) 1px, transparent 1.5px),
+      radial-gradient(rgba(255, 255, 255, .55) 1px, transparent 1.5px),
+      radial-gradient(rgba(190, 130, 40, .15) 1.5px, transparent 2px),
+      radial-gradient(ellipse at 30% 20%, #fbe7b2, transparent 60%);
+    background-size: 7px 7px, 11px 11px, 17px 17px, 100% 100%;
+    background-position: 0 0, 3px 5px, 8px 2px, 0 0;
+    overflow-x: hidden;
   }
-  .wrap { max-width: 1200px; margin: 0 auto; }
-  .placa {
-    display: block; width: fit-content; margin: 8px auto 20px; padding: 10px 32px;
-    background: linear-gradient(#a8693a, #7d4a24); border: 4px solid #5e3416; border-radius: 14px;
-    font: 400 clamp(26px, 5vw, 56px) 'Luckiest Guy', cursive; color: #fff6e0;
-    text-shadow: 3px 3px 0 #5e3416; box-shadow: 0 6px 0 #5e3416; text-align: center;
+  /* mar no canto de cima à direita, com espuma */
+  body::before {
+    content: ""; position: fixed; top: -140px; right: -140px; width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, #1f9fd0 0 55%, #5cc6ea 62%, #bfeaf8 66%, #ffffff 69%, transparent 72%);
+    pointer-events: none; z-index: 0;
   }
-  .placa span { color: var(--pink); text-shadow: 3px 3px 0 #fff, 5px 5px 0 #5e3416; }
-  .placa.novos { color: var(--yellow); margin-top: 28px; }
-  .grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
-  .vazio { grid-column: 1 / -1; text-align: center; opacity: .6; margin: 0; }
+  .deco { position: fixed; pointer-events: none; z-index: 0; line-height: 1; filter: drop-shadow(1px 2px 1px rgba(120, 80, 10, .35)); }
+  .deco svg { display: block; }
+  .wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+  .titulo {
+    display: block; width: fit-content; max-width: 100%; margin: 0 auto 18px; padding: 8px 34px 4px;
+    font: 400 clamp(30px, 6vw, 64px) 'Luckiest Guy', cursive; color: #d98a12; letter-spacing: 1px; text-align: center;
+    text-shadow: 0 2px 0 #fff3cf, 2px 4px 0 #8a5a12, 3px 6px 6px rgba(90, 55, 5, .4);
+  }
+  .titulo span { color: #f26a1b; }
+  .painel {
+    background: rgba(253, 247, 230, .45); border: 6px solid var(--laranja); border-radius: 14px;
+    box-shadow: 0 4px 0 var(--laranja-esc), 0 10px 22px rgba(120, 80, 10, .2); padding: 18px 14px 16px; position: relative;
+  }
+  .etiqueta {
+    display: block; width: fit-content; margin: -36px auto 14px; padding: 6px 26px; border-radius: 999px;
+    background: var(--laranja); color: #fff; font-size: clamp(18px, 3vw, 24px); letter-spacing: .5px;
+    box-shadow: 0 3px 0 var(--laranja-esc); text-shadow: 1px 1px 0 var(--laranja-esc);
+  }
+  .etiqueta.azul { background: var(--azul); box-shadow: 0 3px 0 var(--azul-esc); text-shadow: 1px 1px 0 var(--azul-esc); }
+  .painel + .painel { margin-top: 40px; }
+  .grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .vazio { grid-column: 1 / -1; text-align: center; opacity: .7; margin: 0; }
   .som {
-    position: relative; padding: 8px 6px; border: 2px solid var(--wood-dark); border-radius: 8px;
-    background: linear-gradient(#f8d9a6, var(--wood)); box-shadow: 0 3px 0 var(--wood-dark);
-    font: 600 17px Fredoka, sans-serif; color: var(--ink); cursor: pointer; text-align: center;
+    position: relative; padding: 9px 6px; border: 0; border-radius: 10px;
+    background: var(--creme); box-shadow: 0 2px 0 #e6d7ad, 0 4px 8px rgba(120, 80, 10, .12);
+    font: 400 17px 'Bree Serif', Georgia, serif; color: var(--tinta); cursor: pointer; text-align: center;
     overflow-wrap: anywhere;
   }
-  .som:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--wood-dark); }
-  .novo .som { background: linear-gradient(#fff07a, var(--yellow)); border-color: #d1a900; box-shadow: 0 3px 0 #d1a900; }
+  .som:hover { background: #fff; }
+  .som:active { transform: translateY(2px); box-shadow: 0 1px 0 #e6d7ad; }
+  .novo .som { background: var(--azul); color: #fff; box-shadow: 0 3px 0 var(--azul-esc), 0 4px 8px rgba(20, 80, 110, .2); }
+  .novo .som:hover { background: #5cc0e6; }
   .apagar {
     position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; border-radius: 50%;
-    border: 0; background: #d33; color: #fff; font-weight: 700; cursor: pointer; line-height: 22px; padding: 0;
+    border: 0; background: #d33; color: #fff; font: 700 14px sans-serif; cursor: pointer; line-height: 22px; padding: 0;
   }
-  form { display: flex; gap: 8px; justify-content: center; margin: 20px 0 8px; flex-wrap: wrap; }
+  form { display: flex; gap: 8px; justify-content: center; margin: 24px 0 8px; flex-wrap: wrap; }
   input, select {
-    padding: 10px 12px; font: 600 17px Fredoka, sans-serif;
-    border: 2px solid var(--wood-dark); border-radius: 8px; background: #fffaf0; color: var(--ink);
+    padding: 10px 12px; font: 400 17px 'Bree Serif', Georgia, serif;
+    border: 3px solid var(--laranja); border-radius: 10px; background: var(--creme); color: var(--tinta);
   }
   input { flex: 1 1 220px; max-width: 320px; }
   button.add {
-    padding: 10px 18px; font: 400 20px 'Luckiest Guy', cursive; color: #fff; cursor: pointer;
-    background: var(--pink); border: 2px solid #c2337a; border-radius: 8px; box-shadow: 0 3px 0 #c2337a;
+    padding: 10px 20px; font: 400 18px 'Bree Serif', Georgia, serif; color: #fff; cursor: pointer;
+    background: var(--laranja); border: 0; border-radius: 999px; box-shadow: 0 3px 0 var(--laranja-esc);
   }
-  #aviso { text-align: center; min-height: 1.4em; margin: 0; }
-  .rodape { text-align: center; margin: 24px 0 0; }
-  .link { background: none; border: 0; padding: 4px; font: 600 14px Fredoka, sans-serif; color: var(--ink); opacity: .6; text-decoration: underline; cursor: pointer; }
+  #aviso { text-align: center; min-height: 1.4em; margin: 8px 0 0; color: var(--marrom); }
+  .rodape { text-align: center; margin: 20px 0 0; }
+  .link { background: none; border: 0; padding: 4px; font: 400 14px 'Bree Serif', Georgia, serif; color: var(--marrom); opacity: .7; text-decoration: underline; cursor: pointer; }
+  @media (max-width: 640px) { .deco.grande { display: none; } body::before { width: 220px; height: 220px; top: -100px; right: -100px; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1 class="placa">Sons da live da <span>Dinda</span></h1>
-  <div class="grade" id="sons"><p class="vazio">Carregando…</p></div>
+<!-- enfeites do overlay: conchas e estrelas-do-mar nos cantos -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="estrela" viewBox="0 0 100 100"><path d="M50 4c5 0 8 22 12 30s27 4 29 9-18 15-21 24 9 26 5 30-21-10-25-10-21 14-25 10 8-21 5-30S7 48 9 43s25-1 29-9S45 4 50 4z" fill="#f59b4c" stroke="#d9732a" stroke-width="3"/><g fill="#ffd2a6"><circle cx="50" cy="22" r="2.5"/><circle cx="50" cy="34" r="2.5"/><circle cx="76" cy="44" r="2.5"/><circle cx="24" cy="44" r="2.5"/><circle cx="64" cy="76" r="2.5"/><circle cx="36" cy="76" r="2.5"/></g></symbol>
+    <symbol id="concha" viewBox="0 0 100 90"><path d="M50 86 12 46C4 30 20 6 50 6s46 24 38 40z" fill="#fcd25c" stroke="#e0a526" stroke-width="3"/><g stroke="#e0a526" stroke-width="3" fill="none"><path d="M50 86V8M50 86 27 12M50 86 73 12M50 86 13 30M50 86 87 30"/></g><path d="M40 86h20l-4 4H44z" fill="#e0a526"/></symbol>
+  </defs>
+</svg>
+<span class="deco grande" style="left:14px;top:18px"><svg width="40" height="36"><use href="#concha"/></svg></span>
+<span class="deco grande" style="right:40px;top:150px;transform:rotate(18deg)"><svg width="54" height="54"><use href="#estrela"/></svg></span>
+<span class="deco" style="left:12px;bottom:14px;transform:rotate(-12deg)"><svg width="64" height="58"><use href="#concha"/></svg></span>
+<span class="deco" style="right:14px;bottom:14px;transform:rotate(-20deg)"><svg width="46" height="46"><use href="#estrela"/></svg></span>
+<span class="deco grande" style="left:46%;bottom:8px;transform:rotate(8deg)"><svg width="34" height="30"><use href="#concha"/></svg></span>
 
-  <h2 class="placa novos">Novos sons</h2>
-  <div class="grade novo" id="novos"></div>
+<div class="wrap">
+  <h1 class="titulo">Sons da live da <span>Dinda</span></h1>
+
+  <section class="painel">
+    <h2 class="etiqueta">Sons</h2>
+    <div class="grade" id="sons"><p class="vazio">Carregando…</p></div>
+  </section>
+
+  <section class="painel">
+    <h2 class="etiqueta azul">Novos sons</h2>
+    <div class="grade novo" id="novos"></div>
+  </section>
 
   <form id="form" hidden>
     <input id="cmd" placeholder="novo comando, ex: !bomdia" autocomplete="off" required maxlength="31" aria-label="Novo comando">
