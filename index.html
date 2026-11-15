@@ -19,8 +19,8 @@
     background: var(--areia) url(areia.webp) repeat; background-size: 840px auto; background-attachment: fixed;
     overflow-x: hidden;
   }
-  .mar { position: fixed; left: 0; bottom: 0; width: min(420px, 55vw); pointer-events: none; z-index: 0; }
-  .logo { display: block; width: min(420px, 80vw); height: auto; margin: -8px auto -10px; }
+  /* vídeo da live em loop de 10 s atrás de tudo: a onda vem e volta; a areia (acima) aparece enquanto ele carrega */
+  .fundo { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none; }
   .deco { position: fixed; pointer-events: none; z-index: 0; line-height: 1; filter: drop-shadow(1px 2px 1px rgba(120, 80, 10, .35)); }
   .deco svg { display: block; }
   .wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
@@ -30,7 +30,7 @@
     background: var(--laranja); border-radius: 999px; box-shadow: 0 3px 0 var(--laranja-esc); text-shadow: 1px 1px 0 var(--laranja-esc);
   }
   .painel {
-    background: rgba(253, 247, 230, .45); border: 6px solid var(--laranja); border-radius: 14px;
+    background: rgba(253, 247, 230, .72); border: 6px solid var(--laranja); border-radius: 14px;
     box-shadow: 0 4px 0 var(--laranja-esc), 0 10px 22px rgba(120, 80, 10, .2); padding: 18px 14px 16px; position: relative;
   }
   .etiqueta {
@@ -69,34 +69,6 @@
   #aviso { text-align: center; min-height: 1.4em; margin: 8px 0 0; color: var(--marrom); }
   .rodape { text-align: center; margin: 20px 0 0; }
   .link { background: none; border: 0; padding: 4px; font: 400 14px 'Bree Serif', Georgia, serif; color: var(--marrom); opacity: .7; text-decoration: underline; cursor: pointer; }
-  /* Abertura igual à da live: a água cobre a tela e recua na diagonal até o canto de baixo à esquerda. */
-  .onda { position: fixed; inset: 0; z-index: 10; overflow: hidden; pointer-events: none; }
-  .onda .agua {
-    position: absolute; top: 50%; left: 50%; width: 300vmax; height: 300vmax; margin: -150vmax 0 0 -150vmax;
-    /* ponta da onda à direita (antes de girar): espuma, faixa clara, depois a água funda do vídeo */
-    background:
-      linear-gradient(to left, transparent 0 0.6vmax, #dff7fd 0.6vmax 3vmax, rgba(155, 230, 247, .9) 3vmax 4vmax, rgba(104, 216, 240, .72) 4vmax 14vmax, rgba(104, 216, 240, 0) 22vmax),
-      url(agua.webp) 0 0 / 1000px auto repeat, #50b0c9;
-    border-radius: 0 25% 25% 0 / 0 50% 50% 0;
-    transform: rotate(-35deg) translateX(-78vmax);
-    animation: recua 2.1s cubic-bezier(.45, 0, .3, 1) .6s forwards;
-  }
-  .onda.saiu { opacity: 0; transition: opacity .35s; }
-  @keyframes recua { to { transform: rotate(-35deg) translateX(-205vmax); } }
-  @keyframes aparece { from { opacity: 0; transform: scale(.92); } }
-  @keyframes sobe { from { opacity: 0; transform: translateY(24px); } }
-  .logo { animation: aparece .6s ease-out 1.6s both; }
-  .titulo { animation: sobe .5s ease-out 2.1s both; }
-  .painel { animation: sobe .5s ease-out 2.3s both; }
-  .painel + .painel { animation-delay: 2.45s; }
-  .deco, .mar { animation: aparece .5s ease-out 2.5s both; }
-  @media (prefers-reduced-motion: reduce) {
-    .onda { display: none; }
-    .logo, .titulo, .painel, .deco, .mar { animation: none; }
-  }
-  /* garantia: se o navegador não rodar as animações, a página aparece mesmo assim */
-  .pronto .onda { display: none; }
-  .pronto :is(.logo, .titulo, .painel, .deco, .mar) { animation: none !important; }
   @media (max-width: 640px) {
     .deco.grande { display: none; }
     .grade { grid-template-columns: repeat(auto-fill, minmax(125px, 1fr)); gap: 8px; }
@@ -112,8 +84,7 @@
     <symbol id="concha" viewBox="0 0 100 90"><path d="M50 86 12 46C4 30 20 6 50 6s46 24 38 40z" fill="#fcd25c" stroke="#e0a526" stroke-width="3"/><g stroke="#e0a526" stroke-width="3" fill="none"><path d="M50 86V8M50 86 27 12M50 86 73 12M50 86 13 30M50 86 87 30"/></g><path d="M40 86h20l-4 4H44z" fill="#e0a526"/></symbol>
   </defs>
 </svg>
-<div class="onda" aria-hidden="true"><div class="agua"></div></div>
-<img class="mar" src="mar.webp" alt="">
+<video class="fundo" src="fundo.mp4" poster="fundo.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
 <img class="deco grande" src="chinelos.webp" alt="" width="150" height="142" style="left:24px;top:24px;transform:rotate(-8deg)">
 <span class="deco" style="right:28px;top:28px"><svg width="40" height="36"><use href="#concha"/></svg></span>
 <span class="deco grande" style="right:40px;top:150px;transform:rotate(18deg)"><svg width="54" height="54"><use href="#estrela"/></svg></span>
@@ -121,7 +92,6 @@
 <span class="deco grande" style="left:46%;bottom:8px;transform:rotate(8deg)"><svg width="34" height="30"><use href="#concha"/></svg></span>
 
 <div class="wrap">
-  <img class="logo" src="logo.webp" alt="Gui Atlanta" width="600" height="408">
   <h1 class="titulo">Sons da live da Dinda</h1>
 
   <section class="painel">
@@ -231,10 +201,8 @@ document.getElementById('form').onsubmit = e => {
   api('POST', secao, nome).then(ok => { if (ok) { input.value = ''; aviso(`!${nome} adicionado`); } });
 };
 
-// quando a onda termina de recuar, some com ela e tira do caminho
-const onda = document.querySelector('.onda');
-onda.firstElementChild.addEventListener('animationend', () => { onda.classList.add('saiu'); setTimeout(() => onda.remove(), 400); });
-setTimeout(() => document.body.classList.add('pronto'), 4000);
+// quem pediu menos movimento no sistema vê o vídeo parado
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelector('.fundo').pause();
 
 modoEdicao(senha);
 carregar();
