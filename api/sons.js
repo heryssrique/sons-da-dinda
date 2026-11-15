@@ -1,4 +1,4 @@
-// Cada som é um blob "itens/<secao>/<nome>"; a ordem na tela é a ordem em que foi adicionado.
+// Cada som é um blob "itens/<secao>/<ordem>-<nome>"; <ordem> é o instante em ms, com zeros à esquerda, e define a posição na tela.
 // Adicionar e apagar não reescrevem uma lista inteira, então não há corrida entre dois editores.
 import { list, put, del } from '@vercel/blob';
 import { createHash, timingSafeEqual } from 'node:crypto';
@@ -19,7 +19,10 @@ async function todos() {
     blobs.push(...r.blobs);
     cursor = r.hasMore ? r.cursor : undefined;
   } while (cursor);
-  return blobs.sort((a, b) => new Date(a.uploadedAt) - new Date(b.uploadedAt));
+  // uploadedAt não tem precisão suficiente para ordenar; o prefixo <ordem> tem.
+  return blobs
+    .map(b => { const [, secao, arquivo] = b.pathname.split('/'); return { url: b.url, secao, ordem: arquivo.split('-')[0], nome: arquivo.slice(arquivo.indexOf('-') + 1) }; })
+    .sort((a, b) => a.ordem.localeCompare(b.ordem));
 }
 
 export default async function handler(req, res) {
@@ -27,10 +30,7 @@ export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const out = { sons: [], novos: [] };
-      for (const b of await todos()) {
-        const [, secao, nome] = b.pathname.split('/');
-        if (out[secao]) out[secao].push(nome);
-      }
+      for (const { secao, nome } of await todos()) if (out[secao]) out[secao].push(nome);
       return res.status(200).json(out);
     }
 
@@ -45,14 +45,14 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const blobs = await todos();
       if (blobs.length >= LIMITE) return res.status(400).json({ erro: 'Limite de sons atingido.' });
-      if (blobs.some(b => b.pathname.endsWith(`/${nome}`))) return res.status(409).json({ erro: `!${nome} já existe.` });
-      await put(`itens/${secao}/${nome}`, '1', { access: 'public', addRandomSuffix: false, allowOverwrite: true, contentType: 'text/plain' });
+      if (blobs.some(b => b.nome === nome)) return res.status(409).json({ erro: `!${nome} já existe.` });
+      await put(`itens/${secao}/${String(Date.now()).padStart(15, '0')}-${nome}`, '1', { access: 'public', addRandomSuffix: false, allowOverwrite: true, contentType: 'text/plain' });
       return res.status(201).json({ ok: true });
     }
 
     if (req.method === 'DELETE') {
-      const alvo = (await todos()).find(b => b.pathname === `itens/${secao}/${nome}`);
-      if (alvo) await del(alvo.url);
+      const alvos = (await todos()).filter(b => b.secao === secao && b.nome === nome);
+      if (alvos.length) await del(alvos.map(b => b.url));
       return res.status(200).json({ ok: true });
     }
 
