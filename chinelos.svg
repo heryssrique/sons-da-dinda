@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="60 55 365 335">
+  <!-- Par de chinelos de arco-íris em vetor. Cada sola tem 288 unidades de comprimento (y 4 a 292). -->
+  <defs>
+    <path id="sola" d="M55 4C92 4 108 40 106 92c-2 48-18 68-18 98 0 40 12 60 8 80-4 18-24 22-41 22s-37-4-41-22c-4-20 8-40 8-80 0-30-16-50-18-98C2 40 18 4 55 4z"/>
+    <clipPath id="recorte"><use href="#sola"/></clipPath>
+    <linearGradient id="brilho" x1="0" x2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".0"/>
+      <stop offset=".45" stop-color="#fff" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".12"/>
+    </linearGradient>
+    <g id="chinelo">
+      <!-- espessura da sola -->
+      <use href="#sola" transform="translate(3 5)" fill="#3c3c50" opacity=".55"/>
+      <g clip-path="url(#recorte)">
+        <g transform="rotate(-12 55 148)">
+          <rect x="-40" y="-40" width="190" height="80" fill="#ef3e3a"/>
+          <rect x="-40" y="40" width="190" height="42" fill="#f7862a"/>
+          <rect x="-40" y="82" width="190" height="42" fill="#fbd334"/>
+          <rect x="-40" y="124" width="190" height="42" fill="#3db449"/>
+          <rect x="-40" y="166" width="190" height="42" fill="#2fa9e0"/>
+          <rect x="-40" y="208" width="190" height="42" fill="#2f5fc4"/>
+          <rect x="-40" y="250" width="190" height="90" fill="#7b3fa8"/>
+        </g>
+        <use href="#sola" fill="url(#brilho)"/>
+      </g>
+      <use href="#sola" fill="none" stroke="#2b2b3a" stroke-opacity=".35" stroke-width="2.5"/>
+      <!-- marca oval no calcanhar (sem nome) -->
+      <ellipse cx="55" cy="240" rx="27" ry="17" fill="none" stroke="#fff" stroke-width="3.5" opacity=".9"/>
+      <ellipse cx="55" cy="240" rx="19" ry="10" fill="none" stroke="#fff" stroke-width="2" opacity=".75"/>
+      <!-- tiras -->
+      <g stroke-linecap="round" fill="none">
+        <path d="M55 74C42 104 24 140 12 178M55 74C68 104 86 140 98 178" stroke="#7a7a8a" stroke-width="15" opacity=".35" transform="translate(2 4)"/>
+        <path d="M55 74C42 104 24 140 12 178M55 74C68 104 86 140 98 178" stroke="#fdfdfd" stroke-width="14"/>
+        <path d="M55 74C42 104 24 140 12 178M55 74C68 104 86 140 98 178" stroke="#d9dde6" stroke-width="4" transform="translate(1.5 2)"/>
+      </g>
+      <circle cx="55" cy="72" r="9" fill="#fdfdfd" stroke="#c9ced8" stroke-width="2"/>
+    </g>
+  </defs>
+  <!-- dois pés lado a lado, deitados na diagonal como no overlay -->
+  <use href="#chinelo" transform="translate(300 40) rotate(58)"/>
+  <use href="#chinelo" transform="translate(380 150) rotate(58)"/>
+</svg>
