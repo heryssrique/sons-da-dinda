@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 262 352">
+  <!-- Par de chinelos de arco-íris (como os do Gui): 8 listras, tira branca em cima e azul-clara nas laterais.
+       Cada sola tem 288 unidades de comprimento (y 4 a 292); sem sombra, cores de sol. -->
+  <defs>
+    <path id="sola" d="M55 4C88 4 108 30 108 80c0 38-8 70-8 100 0 30 4 52 4 76 0 24-18 36-49 36S6 280 6 256c0-24 4-46 4-76 0-30-8-62-8-100C2 30 22 4 55 4z"/>
+    <clipPath id="recorte"><use href="#sola"/></clipPath>
+    <linearGradient id="sol" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity=".18"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#fff" stop-opacity=".1"/>
+    </linearGradient>
+    <g id="chinelo">
+      <g clip-path="url(#recorte)">
+        <rect x="0" y="0" width="110" height="40" fill="#f25aa0"/>
+        <rect x="0" y="40" width="110" height="36" fill="#f0453f"/>
+        <rect x="0" y="76" width="110" height="36" fill="#f98a2c"/>
+        <rect x="0" y="112" width="110" height="36" fill="#ffd93a"/>
+        <rect x="0" y="148" width="110" height="36" fill="#3fb553"/>
+        <rect x="0" y="184" width="110" height="36" fill="#2ec4d6"/>
+        <rect x="0" y="220" width="110" height="36" fill="#4a7fe0"/>
+        <rect x="0" y="256" width="110" height="40" fill="#a06ad8"/>
+        <use href="#sola" fill="url(#sol)"/>
+      </g>
+      <use href="#sola" fill="none" stroke="#5a4a7a" stroke-opacity=".35" stroke-width="2"/>
+      <!-- oval branco no calcanhar -->
+      <ellipse cx="55" cy="236" rx="30" ry="16" fill="none" stroke="#fff" stroke-width="3.5"/>
+      <rect x="44" y="258" width="22" height="9" rx="4.5" fill="none" stroke="#fff" stroke-width="1.8" opacity=".9"/>
+      <!-- tiras: azul-clara inteira, branca por cima na parte de cima -->
+      <g fill="none" stroke-linecap="round">
+        <path d="M55 70C40 98 20 134 9 172M55 70C70 98 90 134 101 172" stroke="#35c5ee" stroke-width="15"/>
+        <path d="M55 70C42 94 25 124 16 150M55 70C68 94 85 124 94 150" stroke="#ffffff" stroke-width="15"/>
+        <path d="M55 70C42 94 25 124 16 150M55 70C68 94 85 124 94 150" stroke="#e6ecf2" stroke-width="3" transform="translate(1.5 3)"/>
+      </g>
+      <ellipse cx="55" cy="68" rx="9" ry="8" fill="#35c5ee"/>
+    </g>
+  </defs>
+  <!-- lado a lado, o direito um pouco mais abaixo, como na foto -->
+  <use href="#chinelo" transform="translate(12 6)"/>
+  <use href="#chinelo" transform="translate(140 54)"/>
+</svg>

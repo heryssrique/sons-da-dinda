@@ -23,7 +23,7 @@
   .fundo { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none; }
   .deco { position: fixed; pointer-events: none; z-index: 0; line-height: 1; filter: drop-shadow(1px 2px 1px rgba(120, 80, 10, .35)); }
   .deco svg { display: block; }
-  .chinelos { width: 27.2cm; height: auto; left: -2cm; top: 3cm; transform: rotate(-14deg); filter: none; /* sem sombra: iluminados como no sol */ }
+  .chinelos { width: 24.8cm; height: auto; left: -1cm; top: 2.5cm; transform: rotate(-10deg); filter: none; /* sem sombra: iluminados como no sol */ }
   .wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
   .titulo {
     display: block; width: fit-content; max-width: 100%; margin: 0 auto 34px; padding: 6px 28px;
@@ -86,8 +86,8 @@
   </defs>
 </svg>
 <video class="fundo" src="fundo.mp4" poster="fundo.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
-<!-- chinelos 41/42 de verdade (foto), em tamanho real: cada sola tem ~815 px na imagem de 811 px = 27,3 cm, então a imagem tem 811/815 x 27,3 = 27,2 cm -->
-<img class="deco grande chinelos" src="chinelos-praia.webp" alt="" width="811" height="983">
+<!-- chinelos 41/42 desenhados em vetor, em tamanho real: cada sola tem 288 unidades de comprimento = 27,3 cm e o desenho tem 262 de largura, então 262/288 x 27,3 = 24,8 cm -->
+<img class="deco grande chinelos" src="chinelos-42.svg" alt="" width="262" height="352">
 <span class="deco" style="right:28px;top:28px"><svg width="40" height="36"><use href="#concha"/></svg></span>
 <span class="deco grande" style="right:40px;top:150px;transform:rotate(18deg)"><svg width="54" height="54"><use href="#estrela"/></svg></span>
 <span class="deco" style="right:14px;bottom:14px;transform:rotate(-20deg)"><svg width="46" height="46"><use href="#estrela"/></svg></span>
