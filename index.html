@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sons da Live da Dinda</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Luckiest+Guy&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap">
 <style>
   /* Visual do overlay da live: areia, mar no canto, molduras laranja, balões creme e etiquetas azuis. */
   :root {
@@ -15,32 +15,20 @@
   [hidden] { display: none !important; } /* senão o display:flex do form vence o atributo hidden */
   body {
     margin: 0; min-height: 100vh; padding: 24px 16px 40px; font-family: 'Bree Serif', Georgia, serif; color: var(--tinta);
-    background-color: var(--areia);
-    /* grãos de areia */
-    background-image:
-      radial-gradient(rgba(160, 110, 30, .22) 1px, transparent 1.5px),
-      radial-gradient(rgba(255, 255, 255, .55) 1px, transparent 1.5px),
-      radial-gradient(rgba(190, 130, 40, .15) 1.5px, transparent 2px),
-      radial-gradient(ellipse at 30% 20%, #fbe7b2, transparent 60%);
-    background-size: 7px 7px, 11px 11px, 17px 17px, 100% 100%;
-    background-position: 0 0, 3px 5px, 8px 2px, 0 0;
+    /* areia real do overlay (azulejo espelhado, sem costura) */
+    background: var(--areia) url(areia.webp) repeat; background-size: 840px auto; background-attachment: fixed;
     overflow-x: hidden;
   }
-  /* mar no canto de cima à direita, com espuma */
-  body::before {
-    content: ""; position: fixed; top: -140px; right: -140px; width: 360px; height: 360px; border-radius: 50%;
-    background: radial-gradient(circle, #1f9fd0 0 55%, #5cc6ea 62%, #bfeaf8 66%, #ffffff 69%, transparent 72%);
-    pointer-events: none; z-index: 0;
-  }
+  .mar { position: fixed; left: 0; bottom: 0; width: min(420px, 55vw); pointer-events: none; z-index: 0; }
+  .logo { display: block; width: min(420px, 80vw); height: auto; margin: -8px auto -10px; }
   .deco { position: fixed; pointer-events: none; z-index: 0; line-height: 1; filter: drop-shadow(1px 2px 1px rgba(120, 80, 10, .35)); }
   .deco svg { display: block; }
   .wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
   .titulo {
-    display: block; width: fit-content; max-width: 100%; margin: 0 auto 18px; padding: 8px 34px 4px;
-    font: 400 clamp(30px, 6vw, 64px) 'Luckiest Guy', cursive; color: #d98a12; letter-spacing: 1px; text-align: center;
-    text-shadow: 0 2px 0 #fff3cf, 2px 4px 0 #8a5a12, 3px 6px 6px rgba(90, 55, 5, .4);
+    display: block; width: fit-content; max-width: 100%; margin: 0 auto 34px; padding: 6px 28px;
+    font: 400 clamp(20px, 3.4vw, 30px) 'Bree Serif', Georgia, serif; color: #fff; text-align: center;
+    background: var(--laranja); border-radius: 999px; box-shadow: 0 3px 0 var(--laranja-esc); text-shadow: 1px 1px 0 var(--laranja-esc);
   }
-  .titulo span { color: #f26a1b; }
   .painel {
     background: rgba(253, 247, 230, .45); border: 6px solid var(--laranja); border-radius: 14px;
     box-shadow: 0 4px 0 var(--laranja-esc), 0 10px 22px rgba(120, 80, 10, .2); padding: 18px 14px 16px; position: relative;
@@ -81,7 +69,11 @@
   #aviso { text-align: center; min-height: 1.4em; margin: 8px 0 0; color: var(--marrom); }
   .rodape { text-align: center; margin: 20px 0 0; }
   .link { background: none; border: 0; padding: 4px; font: 400 14px 'Bree Serif', Georgia, serif; color: var(--marrom); opacity: .7; text-decoration: underline; cursor: pointer; }
-  @media (max-width: 640px) { .deco.grande { display: none; } body::before { width: 220px; height: 220px; top: -100px; right: -100px; } }
+  @media (max-width: 640px) {
+    .deco.grande { display: none; }
+    .grade { grid-template-columns: repeat(auto-fill, minmax(125px, 1fr)); gap: 8px; }
+    .painel { padding: 18px 10px 12px; }
+  }
 </style>
 </head>
 <body>
@@ -92,14 +84,16 @@
     <symbol id="concha" viewBox="0 0 100 90"><path d="M50 86 12 46C4 30 20 6 50 6s46 24 38 40z" fill="#fcd25c" stroke="#e0a526" stroke-width="3"/><g stroke="#e0a526" stroke-width="3" fill="none"><path d="M50 86V8M50 86 27 12M50 86 73 12M50 86 13 30M50 86 87 30"/></g><path d="M40 86h20l-4 4H44z" fill="#e0a526"/></symbol>
   </defs>
 </svg>
-<span class="deco grande" style="left:14px;top:18px"><svg width="40" height="36"><use href="#concha"/></svg></span>
+<img class="mar" src="mar.webp" alt="">
+<img class="deco grande" src="chinelos.webp" alt="" width="150" height="142" style="left:24px;top:24px;transform:rotate(-8deg)">
+<span class="deco" style="right:28px;top:28px"><svg width="40" height="36"><use href="#concha"/></svg></span>
 <span class="deco grande" style="right:40px;top:150px;transform:rotate(18deg)"><svg width="54" height="54"><use href="#estrela"/></svg></span>
-<span class="deco" style="left:12px;bottom:14px;transform:rotate(-12deg)"><svg width="64" height="58"><use href="#concha"/></svg></span>
 <span class="deco" style="right:14px;bottom:14px;transform:rotate(-20deg)"><svg width="46" height="46"><use href="#estrela"/></svg></span>
 <span class="deco grande" style="left:46%;bottom:8px;transform:rotate(8deg)"><svg width="34" height="30"><use href="#concha"/></svg></span>
 
 <div class="wrap">
-  <h1 class="titulo">Sons da live da <span>Dinda</span></h1>
+  <img class="logo" src="logo.webp" alt="Gui Atlanta" width="600" height="408">
+  <h1 class="titulo">Sons da live da Dinda</h1>
 
   <section class="painel">
     <h2 class="etiqueta">Sons</h2>
